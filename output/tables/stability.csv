@@ -1,0 +1,48 @@
+"run","term","L"
+"Baseline","const",0.106315705963543
+"Baseline","dollar",0.102173128688388
+"Baseline","precious",0.0404952912404381
+"Baseline","base",0.460831832511527
+"Baseline","energy",0.207452335449021
+"Start in 1999","const",0.085708470160429
+"Start in 1999","dollar",0.0292069291836539
+"Start in 1999","precious",0.0360644145116323
+"Start in 1999","base",0.406821185050356
+"Start in 1999","energy",0.150617028502458
+"Start in 1999, EUR/USD","const",0.0461818672282464
+"Start in 1999, EUR/USD","dollar",0.0660171026098919
+"Start in 1999, EUR/USD","precious",0.0406488929246275
+"Start in 1999, EUR/USD","base",0.322386843459119
+"Start in 1999, EUR/USD","energy",0.14253038673724
+"Month-end values","const",0.125263683351927
+"Month-end values","dollar",0.321723117506305
+"Month-end values","precious",0.175806804717405
+"Month-end values","base",0.231614794923226
+"Month-end values","energy",0.16545456951773
+"Agriculture added","const",0.102125872389597
+"Agriculture added","dollar",0.111237984560733
+"Agriculture added","precious",0.0513486636423987
+"Agriculture added","base",0.468629215577772
+"Agriculture added","energy",0.190240719342969
+"Agriculture added","agri",0.121868289277953
+"US stocks added","const",0.0944999969344174
+"US stocks added","dollar",0.0702610462135787
+"US stocks added","precious",0.0321434880277437
+"US stocks added","base",0.535054801035776
+"US stocks added","energy",0.192142189479391
+"US stocks added","stocks",0.685313711790509
+"Platinum for precious","const",0.107952805320474
+"Platinum for precious","dollar",0.108924278408258
+"Platinum for precious","platinum",0.371265487248183
+"Platinum for precious","base",0.480855855209831
+"Platinum for precious","energy",0.206038950365436
+"Iron ore in (all metals)","const",0.11303090437348
+"Iron ore in (all metals)","dollar",0.0892771771983923
+"Iron ore in (all metals)","precious",0.0384394334550805
+"Iron ore in (all metals)","metals",0.49343479054209
+"Iron ore in (all metals)","energy",0.199295721840888
+"Without 2008-09 and 2020","const",0.153587668502377
+"Without 2008-09 and 2020","dollar",0.0932284328696032
+"Without 2008-09 and 2020","precious",0.0574397684078278
+"Without 2008-09 and 2020","base",0.462097059477408
+"Without 2008-09 and 2020","energy",0.102389384175355

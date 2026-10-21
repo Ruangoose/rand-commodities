@@ -1,0 +1,16 @@
+# Raw downloads: never committed (the repo publishes derived results only)
+data-raw/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# renv keeps its library outside git
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
