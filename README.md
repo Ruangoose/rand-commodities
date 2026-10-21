@@ -7,7 +7,8 @@ The rand is often called a commodity currency. This project tests how true that 
 April 1995 (the first full month after the financial rand was scrapped) to September 2026, with rolling
 regressions and a time-varying-parameter model estimated with the Kalman filter.
 
-The results are in [output/RESULTS.md](output/RESULTS.md), which every run rewrites.
+The results are in [output/RESULTS.md](output/RESULTS.md), which every run rewrites. The write-up, with the
+charts, is at [ruangoosen.co.za/projects/rand-commodities](https://ruangoosen.co.za/projects/rand-commodities/).
 
 ## What I found
 - **Yes, and more than it was.** Since about 2016 the rand has moved with base metal prices far more than
