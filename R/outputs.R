@@ -265,6 +265,9 @@ write_results_md <- function(tabs, base, end, path) {
 
 r6 <- function(x) round(x, 6)
 
+# split(), keeping the groups in the order they first appear (split() sorts them).
+split_in_order <- function(x, by) split(x, factor(by, levels = unique(by)))
+
 path_json <- function(path, months, terms) {
   stats::setNames(lapply(terms, function(tm) {
     x <- path[path$term == tm, ]
@@ -301,8 +304,8 @@ write_site_json <- function(base, checks, tests, tabs, end, dir) {
   summary <- list(
     sample = list(start = months[1], end = months[length(months)], months = length(months)),
     full = rows_by_term(tabs$full_sample),
-    periods = lapply(split(tabs$periods, tabs$periods$period), rows_by_term),
-    period_changes = lapply(split(tabs$period_changes, tabs$period_changes$term), function(x) {
+    periods = lapply(split_in_order(tabs$periods, tabs$periods$period), rows_by_term),
+    period_changes = lapply(split_in_order(tabs$period_changes, tabs$period_changes$term), function(x) {
       stats::setNames(lapply(seq_len(nrow(x)), function(j) {
         list(from = x$from[j], to = x$to[j], change = r6(x$change[j]), z = r6(x$z[j]), p = r6(x$p[j]))
       }), paste0(x$from, "_", x$to))
@@ -311,16 +314,19 @@ write_site_json <- function(base, checks, tests, tabs, end, dir) {
       list(drift_sd = r6(tests$drift_sd[j]), lr = r6(tests$lr[j]), p = r6(tests$p[j]))
     }), tests$term),
     stability = as.list(r6(base$stability)),
+    stability_critical = list(p10 = 0.353, p05 = 0.470, p01 = 0.748),   # Hansen (1992), one coefficient
+    index_weights = read_pink_weights(),
     tvp_means = tvp_means_json(tabs$tvp_means),
     rolling_means = tvp_means_json(tabs$rolling_means),
     rolling_last = rolling_point(ro, max(ro$month)),
     rolling_first = rolling_point(ro, min(ro$month)),
-    checks = lapply(split(tabs$checks, tabs$checks$run), function(x) {
+    checks = lapply(split_in_order(tabs$checks, tabs$checks$run), function(x) {
       stats::setNames(lapply(seq_len(nrow(x)), function(j) {
         as.list(lapply(x[j, c("n", "dollar", "precious", "base", "energy", "r2", "r2_commodities")], r6))
       }), x$period)
     }),
-    extremes = extremes(d)
+    extremes = extremes(d),
+    levels = level_facts(lv, base$settings$start, end)
   )
   jsonlite::write_json(summary, file.path(dir, "summary.json"), auto_unbox = TRUE, na = "null",
                        digits = NA, pretty = TRUE)
@@ -335,8 +341,8 @@ rows_by_term <- function(x) {
 }
 
 tvp_means_json <- function(x) {
-  lapply(split(x, x$run), function(r) {
-    lapply(split(r, r$term), function(t) stats::setNames(as.list(r6(t$coef)), t$period))
+  lapply(split_in_order(x, x$run), function(r) {
+    lapply(split_in_order(r, r$term), function(t) stats::setNames(as.list(r6(t$coef)), t$period))
   })
 }
 
@@ -345,6 +351,23 @@ rolling_point <- function(ro, month) {
   c(list(month = month, r2 = r6(x$r2[1]), r2_commodities = r6(x$r2_commodities[1])),
     stats::setNames(lapply(seq_len(nrow(x)), function(j) list(coef = r6(x$coef[j]), se = r6(x$se[j]))),
                     x$term))
+}
+
+# The rand's level at the start and end (rand per dollar, monthly averages), and how closely its change
+# over 12 months tracked base metals' in each period, for the second chart.
+level_facts <- function(lv, start, end) {
+  ch <- function(v) c(rep(NA, 12), 100 * log(v[-(1:12)] / v[1:(length(v) - 12)]))
+  rand12 <- ch(lv$usd_per_zar)
+  base12 <- ch(lv$base)
+  periods <- periods_for(start, end)
+  corr <- lapply(periods, function(r) {
+    i <- lv$month >= r[1] & lv$month <= r[2] & !is.na(rand12)
+    list(from = min(lv$month[i]), to = max(lv$month[i]), corr = r6(stats::cor(rand12[i], base12[i])))
+  })
+  n <- nrow(lv)
+  list(base_month = lv$month[1], last_month = lv$month[n],
+       zar_per_usd_first = r6(1 / lv$usd_per_zar[1]), zar_per_usd_last = r6(1 / lv$usd_per_zar[n]),
+       corr12_base = corr)
 }
 
 # The rand's biggest monthly moves, for the write-up.

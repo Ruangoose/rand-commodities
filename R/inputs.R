@@ -57,6 +57,24 @@ read_pink_indices <- function(dir = "data-raw") {
   out
 }
 
+# The biggest weights inside the indices used (percent), from the "Index Weights" sheet: gold in precious
+# metals and crude oil in energy, for the write-up.
+read_pink_weights <- function(dir = "data-raw") {
+  f <- file.path(dir, "CMO-Historical-Data-Monthly.xlsx")
+  raw <- suppressMessages(readxl::read_excel(f, sheet = "Index Weights", col_names = FALSE,
+                                             col_types = "text"))
+  raw <- as.data.frame(raw, stringsAsFactors = FALSE)
+  weight <- function(name) {
+    i <- which(apply(raw, 1, function(r) any(trimws(r) == name, na.rm = TRUE)))
+    if (length(i) != 1) stop("Pink Sheet weights: expected one row for ", name)
+    v <- suppressWarnings(as.numeric(unlist(raw[i, ])))
+    v[!is.na(v)][1]
+  }
+  list(gold_in_precious = weight("Gold"), silver_in_precious = weight("Silver"),
+       platinum_in_precious = weight("Platinum"), oil_in_energy = weight("Crude Oil"),
+       gas_in_energy = weight("Natural Gas"), coal_in_energy = weight("Coal"))
+}
+
 # Single prices from the "Monthly Prices" sheet, by column name (one check uses platinum).
 read_pink_prices <- function(dir, patterns) {
   f <- file.path(dir, "CMO-Historical-Data-Monthly.xlsx")
